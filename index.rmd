@@ -17,7 +17,7 @@ lapply(lista.de.pacotes, require, character.only=T)
 rm(lista.de.pacotes,novos.pacotes)
 gc()
 
-obitos <- read_xlsx("C:\\Users\\hp pc\\Downloads\\OBITOS.xlsx")
+obitos <- read_xlsx("C:\\Users\\hp pc\\Documents\\GitHub\\fernandaserpa\\OBITOS.xlsx")
 
 obitos_anual <- count(obitos, vars = obitos$ANO_OBITO)
 obitos_anual_regiao <- obitos %>% 
@@ -117,12 +117,21 @@ obitos_crit_ano %>%
 Para os menores de 5 anos, a implementação de ações para a redução da mortalidade pela ausência de saneamento básico (Ações de saúde) e implementação de parcerias e acordos locais para garantir o acesso à diagnósticos podem garantir avanços na redução da mortalidade nessa faixa etária. O acesso às comunidades e a poluição das fontes tradicionais de água às comunidades são grandes desafios, assim como a redução da participação das causas mal definidas. 
 
 
-## Conclus?es
+## Conclusões
 
-Apesar de apresentar resultados há muito superados pela população brasileira urbana, ações necessárias para a redução da mortalidade como a implementação de ações intersetoriais de acesso à água de qualidade, nutrição suficiente e prevenção diagnóstica perpassam por questões como o acesso às terras para as comunidades ca?adoras/coletoras, à educação básica e respeito às formas tradicionais de existência.
+Apesar de apresentar resultados há muito superados pela população brasileira urbana, ações necessárias para a redução da mortalidade como a implementação de ações intersetoriais:
+1.Acesso à água de qualidade, 
+2.Nutrição suficiente,
+3.Prevenção diagnóstica, etc.
+
+Perpassam por questões como o acesso às terras para as comunidades caçadoras/coletoras, à educação básica e respeito às formas tradicionais de existência.
 
 ## 
-As comunidades indígenas ainda enfrentam preconceitos diversos no acesso à serviços básicos como documentação (representando o acesso à cidadania em suas várias formas: saúde especializada, educação, segurança, entre outros) e também por sua extrema relação com o meio ambiente tão devastado e comprimido pelo avanço de agroculturas e exploração de recursos naturais.
+As comunidades indígenas ainda enfrentam preconceitos diversos no acesso à serviços básicos como documentação (representando o acesso à cidadania em suas várias formas: saúde especializada, educação, segurança, entre outros).
+
+Também por sua extrema relação com o meio ambiente tão devastado e comprimido pelo avanço de agroculturas e exploração de recursos naturais.
 
 ## 
-Avanços na atenção ao pré-natal e imunização das comunidades podem ser observados em contraste às deficiências no seguimento da atenção aos recém nascidos e dificuldades na definição da causa básica de óbito para comunidades que não estão cobertas o tempo todo por equipes de saúde e suas distâncias dos centros de especialidades. 
+Avanços na atenção ao pré-natal e imunização das comunidades podem ser observados em contraste às deficiências no seguimento da atenção aos recém nascidos.
+
+As dificuldades na definição da causa básica de óbito para comunidades que não estão cobertas o tempo todo por equipes de saúde e suas distâncias dos centros de especialidades. 
