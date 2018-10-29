@@ -1,0 +1,128 @@
+---
+title: "Mortalidade Indígena"
+author: "Fernanda Serpa"
+date: "24 de outubro de 2018"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+lista.de.pacotes = c("tidyverse","lubridate","janitor","readxl","stringr",
+                     "repmis","survey","srvyr", "ggplot2", "plotly") ## Slide with R Output) # escreva a lista de pacotes
+novos.pacotes <- lista.de.pacotes[!(lista.de.pacotes %in%
+                                      installed.packages()[,"Package"])]
+if(length(novos.pacotes) > 0) {install.packages(novos.pacotes)}
+lapply(lista.de.pacotes, require, character.only=T)
+rm(lista.de.pacotes,novos.pacotes)
+gc()
+
+obitos <- read_xlsx("C:\\Users\\hp pc\\Downloads\\OBITOS.xlsx")
+
+obitos_anual <- count(obitos, vars = obitos$ANO_OBITO)
+obitos_anual_regiao <- obitos %>% 
+  group_by(ANO_OBITO, REGIAO) %>%
+  summarise(obitos=n())
+
+obitos_sexo_fx_etaria <-  obitos %>% 
+  group_by(ANO_OBITO, TP_SEXO, FAIXA_ETARIA) %>% 
+  summarise(obitos = n())
+
+obitos$IDADE_OBITO <- as.numeric(obitos$IDADE_OBITO)
+obitos_crit_ano <- obitos %>% 
+  filter(IDADE_OBITO < 5) %>%
+  group_by(ANO_OBITO, CRITERIO_EVITABILIDADE_MENOR_DE_5_E_ENTRE_5_E_75ANOS) %>% 
+  summarise(total_obitos = n())
+
+
+```
+## Considerações acerca da Mortalidade Indígena
+
+
+Fernanda Borges Serpa
+20181ADPP0015
+
+
+## Objeto
+
+Mortalidade indígena por ano, faixa etária, sexo e principais causas de óbito. 
+
+
+## Objetivo
+
+Observar o comportamento da mortalidade nos ?ltimos anos, desde a criação da Secretaria Especial de Saude Indígena com o intuito de identificar alterações nos comportamento e indicar ações necessárias para os próximos passos das políticas públicas. 
+
+
+## Contexto
+
+População predominantemente rural e em regiões de difícil acesso, as comunidades indígenas ainda sofrem com fatores ultrapassados pela população brasileira em geral ainda no in?cio da década de 90.  
+<http://www.scielosp.org/pdf/csp/2005.v21n5/1602-1608/pt>.
+
+Avanços a passos curtos podem ser percebidos na década de 2010, ainda impactados pelo grande subregistro de eventos e dificuldades logísticas, ambientais e culturais para a implementação das ações públicas necessárias. 
+
+## Metodologia
+
+Foram utilizados os dados preparados para a divulgação das informações dos anos de 2010 a 2016, restringindo as informações aos dados de faixas etárias, sexo, região geográfica e causas de mortalidade. Organizados de forma consolidada, as informações referentes às organizações locais, etnias e locais de ocorrência foram reservados para estudos mais aprofundados posteriores.  
+
+
+## Distribui??o anual das ocorr?ncias
+
+```{r obitos_anual_regiao, echo=TRUE}
+obitos_anual_regiao %>%
+  ggplot(aes(x = ANO_OBITO, y = obitos,color=REGIAO ,group=REGIAO,fill=REGIAO)) +
+  geom_line(size=2) + 
+  scale_x_continuous(breaks=c(2010:2016))+
+  xlab ("Ano do óbito")+
+  ylab ("Total de óbitos")+
+  labs(title = "Óbitos por ano e Região Geográfica")+
+  scale_fill_discrete("Região")
+
+
+```
+O ano de 2013 apresenta um redução das notificações pela atualização da aplicação (SIASI - Sistema de Informação da Atenção à Saúde Indígena) que apresentou dificuldades de implementação. Os anos posteriores apresentam uma visível recuperação do total de óbitos notificados no sistema. 
+
+## Distribuição etária da mortalidade
+
+```{r obitos_sexo_fx_etaria, echo = TRUE}
+obitos_sexo_fx_etaria %>% 
+  ggplot(aes(x = FAIXA_ETARIA, y = obitos, fill = TP_SEXO, group= TP_SEXO))+
+  geom_bar(stat = "identity", position = "dodge")+
+  coord_flip()+
+  facet_wrap(~ANO_OBITO, nrow = 2)+
+  xlab ("Total do Óbito")+
+  ylab ("Ano de Óbito")+
+  labs(title = "Óbitos por ano, faixa et?ria e sexo")+
+  scale_fill_discrete("Região")
+```
+Com uma mortalidade infantil com, aproximadamente, 3 vezes o n?mero nacional (40 por mil x 14 por mil nacional - SIM, 2016), a mortalidade na primeira infância ainda é um dos principais desafios das políticas de promoção à saúde indígena. 
+
+
+## Outra perspectiva
+
+```{r obitos_crit_ano, echo = TRUE}
+obitos_crit_ano %>% 
+  ggplot(aes(x = ANO_OBITO,
+             y = total_obitos,
+             fill = CRITERIO_EVITABILIDADE_MENOR_DE_5_E_ENTRE_5_E_75ANOS,
+             group= CRITERIO_EVITABILIDADE_MENOR_DE_5_E_ENTRE_5_E_75ANOS))+
+  geom_bar(stat = "identity")+
+  theme(legend.position = "bottom")+
+  ggtitle("Menores de 5 anos - Causas reduzíveis por:")+
+  scale_x_continuous(breaks = c(2010:2016))+
+  scale_fill_discrete(name = "Reduzíveis por", labels = c("Ações de Saúde", "Acesso Diagn/Tratam", "Imunoprevenção", "Atenção à gestação", "Atenção ao Parto", "Atenção ao RN", "Demais", "Mal Definidas"))+
+  scale_color_brewer(palette = "Dark2")+
+  ylab("Total de Óbito")+
+  xlab("Ano do Óbito")
+```
+Para os menores de 5 anos, a implementação de ações para a redução da mortalidade pela ausência de saneamento básico (Ações de saúde) e implementação de parcerias e acordos locais para garantir o acesso à diagnósticos podem garantir avanços na redução da mortalidade nessa faixa etária. O acesso às comunidades e a poluição das fontes tradicionais de água às comunidades são grandes desafios, assim como a redução da participação das causas mal definidas. 
+
+
+## Conclus?es
+
+Apesar de apresentar resultados há muito superados pela população brasileira urbana, ações necessárias para a redução da mortalidade como a implementação de ações intersetoriais de acesso à água de qualidade, nutrição suficiente e prevenção diagnóstica perpassam por questões como o acesso às terras para as comunidades ca?adoras/coletoras, à educação básica e respeito às formas tradicionais de existência.
+
+## 
+As comunidades indígenas ainda enfrentam preconceitos diversos no acesso à serviços básicos como documentação (representando o acesso à cidadania em suas várias formas: saúde especializada, educação, segurança, entre outros) e também por sua extrema relação com o meio ambiente tão devastado e comprimido pelo avanço de agroculturas e exploração de recursos naturais.
+
+## 
+Avanços na atenção ao pré-natal e imunização das comunidades podem ser observados em contraste às deficiências no seguimento da atenção aos recém nascidos e dificuldades na definição da causa básica de óbito para comunidades que não estão cobertas o tempo todo por equipes de saúde e suas distâncias dos centros de especialidades. 
